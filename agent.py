@@ -15,13 +15,31 @@ from livekit.agents import (
 from livekit.agents.multimodal import MultimodalAgent
 from livekit.plugins import openai
 
+from livekit.agents.worker import (
+    _WorkerEnvOption,
+    _default_request_fnc,
+    _default_initialize_process_fnc,
+    _DefaultLoadCalc,
+    _default_job_executor_type,
+)
+
 
 load_dotenv(dotenv_path=".env")
 logger = logging.getLogger("my-worker")
 logger.setLevel(logging.INFO)
 
 # Define the threshold directly in the code
-THRESHOLD = 0.90
+THRESHOLD = 1.0
+
+# Create an instance of WorkerOptions with the modified load_threshold
+worker_options = WorkerOptions(
+    entrypoint_fnc=None,  # Replace with the actual entrypoint function
+    request_fnc=_default_request_fnc,
+    prewarm_fnc=_default_initialize_process_fnc,
+    load_fnc=_DefaultLoadCalc.get_load,
+    job_executor_type=_default_job_executor_type,
+    load_threshold=_WorkerEnvOption(dev_default=float("inf"), prod_default=THRESHOLD),
+)
 
 
 async def entrypoint(ctx: JobContext):
@@ -45,9 +63,11 @@ def run_multimodal_agent(ctx: JobContext, participant: rtc.RemoteParticipant):
     current_load = (
         get_current_load()
     )  # Assuming you have a function to get the current load
-    if current_load > THRESHOLD:
+    if current_load > worker_options.load_threshold.prod_default:
         logger.warning(
-            f"Current load {current_load} exceeds threshold {THRESHOLD}. Marking worker as unavailable."
+            f"Current load {current_load} exceeds threshold "
+            f"{worker_options.load_threshold.prod_default}. "
+            "Marking worker as unavailable."
         )
         mark_worker_unavailable()  # Assuming you have a function to mark the worker as unavailable
         return
@@ -94,7 +114,7 @@ def run_multimodal_agent(ctx: JobContext, participant: rtc.RemoteParticipant):
 def get_current_load():
     # Implement this function to return the current load of the worker
     # For example, this could be a call to a monitoring service or a calculation based on current tasks
-    return 0.95  # Placeholder value for current load
+    return 1.0  # Placeholder value for current load
 
 
 def mark_worker_unavailable():
