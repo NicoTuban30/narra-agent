@@ -20,6 +20,9 @@ load_dotenv(dotenv_path=".env")
 logger = logging.getLogger("my-worker")
 logger.setLevel(logging.INFO)
 
+# Define the threshold directly in the code
+THRESHOLD = 0.90
+
 
 async def entrypoint(ctx: JobContext):
     try:
@@ -37,6 +40,17 @@ async def entrypoint(ctx: JobContext):
 
 def run_multimodal_agent(ctx: JobContext, participant: rtc.RemoteParticipant):
     logger.info("starting multimodal agent")
+
+    # Check if the current load exceeds the threshold
+    current_load = (
+        get_current_load()
+    )  # Assuming you have a function to get the current load
+    if current_load > THRESHOLD:
+        logger.warning(
+            f"Current load {current_load} exceeds threshold {THRESHOLD}. Marking worker as unavailable."
+        )
+        mark_worker_unavailable()  # Assuming you have a function to mark the worker as unavailable
+        return
 
     model = openai.realtime.RealtimeModel(
         instructions=(
@@ -75,6 +89,18 @@ def run_multimodal_agent(ctx: JobContext, participant: rtc.RemoteParticipant):
         )
     )
     session.response.create()
+
+
+def get_current_load():
+    # Implement this function to return the current load of the worker
+    # For example, this could be a call to a monitoring service or a calculation based on current tasks
+    return 0.95  # Placeholder value for current load
+
+
+def mark_worker_unavailable():
+    # Implement this function to mark the worker as unavailable
+    # This could involve updating a status in a database or notifying a load balancer
+    logger.info("Worker marked as unavailable due to high load.")
 
 
 if __name__ == "__main__":
