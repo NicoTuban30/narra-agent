@@ -30,10 +30,10 @@ import requests
 import aiohttp
 
 load_dotenv(dotenv_path=".env")
-# api_key = os.getenv("OPENAI_API_KEY")
-# POST_TRANSCRIP_URL = os.getenv("BUBBLE_TRANSCRIPT_ENDPOINT")
-# GET_TRANSCRIPT_URL = os.getenv("BUBBLE_GET_TRANSCRIPT_ENDPOINT")
-# POST_STORY_URL = os.getenv("BUBBLE_STORY_ENDPOINT")
+api_key = os.getenv("OPENAI_API_KEY")
+POST_TRANSCRIP_URL = os.getenv("BUBBLE_TRANSCRIPT_ENDPOINT")
+GET_TRANSCRIPT_URL = os.getenv("BUBBLE_GET_TRANSCRIPT_ENDPOINT")
+POST_STORY_URL = os.getenv("BUBBLE_STORY_ENDPOINT")
 
 logger = logging.getLogger("my-worker")
 logger.setLevel(logging.INFO)
@@ -42,7 +42,7 @@ logger.setLevel(logging.INFO)
 THRESHOLD = 1.0
 
 
-# OpenAI.api_key = api_key
+OpenAI.api_key = api_key
 
 # Initialize FastAPI
 app = FastAPI()
