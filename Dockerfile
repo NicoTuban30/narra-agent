@@ -42,7 +42,7 @@ RUN python -m pip install --user --no-cache-dir -r requirements.txt
 COPY . .
 
 # ensure that any dependent models are downloaded at build-time
-RUN python main.py download-files
+RUN python agent.py download-files
 
 # Run the application.
 CMD ["python", "agent.py", "start"]
