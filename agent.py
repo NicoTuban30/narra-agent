@@ -11,6 +11,7 @@ from livekit.agents import (
     WorkerOptions,
     cli,
     llm,
+    WorkerType,
 )
 from livekit.agents.multimodal import MultimodalAgent
 from livekit.plugins import openai
@@ -118,14 +119,10 @@ def get_current_load():
 
 
 def mark_worker_unavailable():
-    # Implement this function to mark the worker as unavailable
+    # Implement this functioto mark the worker as unavailable
     # This could involve updating a status in a database or notifying a load balancer
     logger.info("Worker marked as unavailable due to high load.")
 
 
 if __name__ == "__main__":
-    cli.run_app(
-        WorkerOptions(
-            entrypoint_fnc=entrypoint,
-        )
-    )
+    cli.run_app(WorkerOptions(entrypoint_fnc=entrypoint, worker_type=WorkerType.ROOM))
