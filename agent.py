@@ -41,10 +41,7 @@ logger.setLevel(logging.INFO)
 # Define the threshold directly in the code
 THRESHOLD = 1.0
 
-if not api_key:
-    raise ValueError(
-        "OPENAI_API_KEY not found in environment variables. Make sure it is set in .env.local."
-    )
+
 OpenAI.api_key = api_key
 
 # Initialize FastAPI
