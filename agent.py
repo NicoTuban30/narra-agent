@@ -2,7 +2,8 @@ from __future__ import annotations
 
 import logging
 import json
-#from dotenv import load_dotenv
+
+# from dotenv import load_dotenv
 
 from livekit import rtc
 from livekit.agents import (
@@ -20,27 +21,27 @@ import os
 from fastapi import FastAPI, HTTPException, status
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
-#from typing import List
+
+# from typing import List
 from datetime import datetime
 
 import requests
 import aiohttp
 
 
-#load_dotenv(dotenv_path="narra-env")
-#api_key = os.getenv("OPENAI_API_KEY")
-#POST_TRANSCRIP_URL = os.getenv("BUBBLE_TRANSCRIPT_ENDPOINT")
-#GET_TRANSCRIPT_URL = os.getenv("BUBBLE_GET_TRANSCRIPT_ENDPOINT")
-#POST_STORY_URL = os.getenv("BUBBLE_STORY_ENDPOINT")
+# load_dotenv(dotenv_path="narra-env")
+# api_key = os.getenv("OPENAI_API_KEY")
+# POST_TRANSCRIP_URL = os.getenv("BUBBLE_TRANSCRIPT_ENDPOINT")
+# GET_TRANSCRIPT_URL = os.getenv("BUBBLE_GET_TRANSCRIPT_ENDPOINT")
+# POST_STORY_URL = os.getenv("BUBBLE_STORY_ENDPOINT")
 
 logger = logging.getLogger("my-worker")
 logger.setLevel(logging.INFO)
 
-#if not api_key:
+# if not api_key:
 #    raise ValueError(
-#        "OPENAI_API_KEY not found in environment variables. Make sure it is set in .env.local."
-    )
-#OpenAI.api_key = api_key
+#        "OPENAI_API_KEY not found in environment variables. Make sure it is set in .env.local.")
+# OpenAI.api_key = api_key
 
 # Initialize FastAPI
 app = FastAPI()
