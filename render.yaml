@@ -3,7 +3,7 @@ services:
   repo: https://github.com/earlrodson/Narra
 
   # Change this to the path containing your Dockerfile
-  rootDir: Narra
+  rootDir: Narra-backend
 
   name: agent-narra
   runtime: image
