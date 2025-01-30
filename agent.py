@@ -34,7 +34,7 @@ THRESHOLD = 1.0
 
 # Create an instance of WorkerOptions with the modified load_threshold
 worker_options = WorkerOptions(
-    entrypoint_fnc=None,  # Replace with the actual entrypoint function
+    entrypoint_fnc=entrypoint,  # Replace with the actual entrypoint function
     request_fnc=_default_request_fnc,
     prewarm_fnc=_default_initialize_process_fnc,
     load_fnc=_DefaultLoadCalc.get_load,
@@ -125,4 +125,12 @@ def mark_worker_unavailable():
 
 
 if __name__ == "__main__":
-    cli.run_app(WorkerOptions(entrypoint_fnc=entrypoint, worker_type=WorkerType.ROOM))
+    cli.run_app(
+        WorkerOptions(
+            entrypoint_fnc=entrypoint,
+            worker_type=WorkerType.ROOM,
+            load_threshold=_WorkerEnvOption(
+                dev_default=float("inf"), prod_default=THRESHOLD
+            ),
+        )
+    )
