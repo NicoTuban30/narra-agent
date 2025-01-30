@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import logging
 
-# from dotenv import load_dotenv
+from dotenv import load_dotenv
 
 from livekit import rtc
 from livekit.agents import (
@@ -16,7 +16,7 @@ from livekit.agents.multimodal import MultimodalAgent
 from livekit.plugins import openai
 
 
-# load_dotenv(dotenv_path=".env.local")
+load_dotenv(dotenv_path=".env")
 logger = logging.getLogger("my-worker")
 logger.setLevel(logging.INFO)
 
