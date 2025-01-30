@@ -32,16 +32,6 @@ logger.setLevel(logging.INFO)
 # Define the threshold directly in the code
 THRESHOLD = 1.0
 
-# Create an instance of WorkerOptions with the modified load_threshold
-worker_options = WorkerOptions(
-    entrypoint_fnc=entrypoint,  # Replace with the actual entrypoint function
-    request_fnc=_default_request_fnc,
-    prewarm_fnc=_default_initialize_process_fnc,
-    load_fnc=_DefaultLoadCalc.get_load,
-    job_executor_type=_default_job_executor_type,
-    load_threshold=_WorkerEnvOption(dev_default=float("inf"), prod_default=THRESHOLD),
-)
-
 
 async def entrypoint(ctx: JobContext):
     try:
