@@ -1,6 +1,6 @@
 services:
 - type: pserv
-  repo: https://github.com/earlrodson/Narra
+  repo: https://github.com/NicoTuban30/narra-agent.git
 
   # Change this to the path containing your Dockerfile
   rootDir: Narra-backend
