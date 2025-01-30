@@ -11,18 +11,11 @@ from livekit.agents import (
     WorkerOptions,
     cli,
     llm,
-    WorkerType,
 )
 from livekit.agents.multimodal import MultimodalAgent
 from livekit.plugins import openai
 
-from livekit.agents.worker import (
-    _WorkerEnvOption,
-    _default_request_fnc,
-    _default_initialize_process_fnc,
-    _DefaultLoadCalc,
-    _default_job_executor_type,
-)
+from livekit.agents.worker import _WorkerEnvOption
 
 
 load_dotenv(dotenv_path=".env")
@@ -49,19 +42,6 @@ async def entrypoint(ctx: JobContext):
 
 def run_multimodal_agent(ctx: JobContext, participant: rtc.RemoteParticipant):
     logger.info("starting multimodal agent")
-
-    # Check if the current load exceeds the threshold
-    current_load = (
-        get_current_load()
-    )  # Assuming you have a function to get the current load
-    if current_load > worker_options.load_threshold.prod_default:
-        logger.warning(
-            f"Current load {current_load} exceeds threshold "
-            f"{worker_options.load_threshold.prod_default}. "
-            "Marking worker as unavailable."
-        )
-        mark_worker_unavailable()  # Assuming you have a function to mark the worker as unavailable
-        return
 
     model = openai.realtime.RealtimeModel(
         instructions=(
@@ -118,7 +98,6 @@ if __name__ == "__main__":
     cli.run_app(
         WorkerOptions(
             entrypoint_fnc=entrypoint,
-            worker_type=WorkerType.ROOM,
             load_threshold=_WorkerEnvOption(
                 dev_default=float("inf"), prod_default=THRESHOLD
             ),
