@@ -14,20 +14,18 @@ from livekit.agents import (
 from livekit.agents.multimodal import MultimodalAgent
 from livekit.plugins import openai as livekit_openai
 
-from livekit.agents.worker import _WorkerEnvOption
-
 from openai import OpenAI
 import os
 
 from fastapi import FastAPI, HTTPException, status
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
-
-# from typing import List
+from typing import List
 from datetime import datetime
 
 import requests
 import aiohttp
+
 
 load_dotenv(dotenv_path=".env")
 api_key = os.getenv("OPENAI_API_KEY")
@@ -38,10 +36,10 @@ POST_STORY_URL = os.getenv("BUBBLE_STORY_ENDPOINT")
 logger = logging.getLogger("my-worker")
 logger.setLevel(logging.INFO)
 
-# Define the threshold directly in the code
-THRESHOLD = 1.0
-
-
+if not api_key:
+    raise ValueError(
+        "OPENAI_API_KEY not found in environment variables. Make sure it is set in .env.local."
+    )
 OpenAI.api_key = api_key
 
 # Initialize FastAPI
@@ -269,17 +267,14 @@ async def generate_story_endpoint(request: TranscriptRequest):
 
 
 async def entrypoint(ctx: JobContext):
-    try:
-        logger.info(f"Connecting to room {ctx.room.name}")
-        await ctx.connect(auto_subscribe=AutoSubscribe.AUDIO_ONLY)
+    logger.info(f"connecting to room {ctx.room.name}")
+    await ctx.connect(auto_subscribe=AutoSubscribe.AUDIO_ONLY)
 
-        participant = await ctx.wait_for_participant()
+    participant = await ctx.wait_for_participant()
 
-        run_multimodal_agent(ctx, participant)
+    await run_multimodal_agent(ctx, participant)
 
-        logger.info("Agent started")
-    except Exception as e:
-        logger.error(f"An error occurred: {e}")
+    logger.info("agent started")
 
 
 async def run_multimodal_agent(ctx: JobContext, participant: rtc.RemoteParticipant):
@@ -314,18 +309,6 @@ async def run_multimodal_agent(ctx: JobContext, participant: rtc.RemoteParticipa
     session = model.sessions[0]
 
 
-def get_current_load():
-    # Implement this function to return the current load of the worker
-    # For example, this could be a call to a monitoring service or a calculation based on current tasks
-    return 1.0  # Placeholder value for current load
-
-
-def mark_worker_unavailable():
-    # Implement this functioto mark the worker as unavailable
-    # This could involve updating a status in a database or notifying a load balancer
-    logger.info("Worker marked as unavailable due to high load.")
-
-
 if __name__ == "__main__":
     import threading
     import uvicorn
@@ -336,13 +319,12 @@ if __name__ == "__main__":
         uvicorn.run(app, host="0.0.0.0", port=8000)
 
     threading.Thread(target=run_fastapi, daemon=True).start()
+
+    # Use asyncio to run the worker and entrypoint asynchronously
     asyncio.run(
         cli.run_app(
             WorkerOptions(
-                entrypoint_fnc=entrypoint,
-                load_threshold=_WorkerEnvOption(
-                    dev_default=float("inf"), prod_default=THRESHOLD
-                ),
+                entrypoint_fnc=entrypoint,  # Ensure entrypoint is async
             )
         )
     )
