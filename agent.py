@@ -39,7 +39,7 @@ logger = logging.getLogger("my-worker")
 logger.setLevel(logging.INFO)
 
 # Define the threshold directly in the code
-THRESHOLD = 1.0
+THRESHOLD = 2.0
 
 if not api_key:
     raise ValueError(
