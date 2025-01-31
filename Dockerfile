@@ -41,6 +41,18 @@ RUN python -m pip install --user --no-cache-dir -r requirements.txt
 
 COPY . .
 
+# Accept build arguments for environment variables
+ARG OPENAI_API_KEY
+ARG BUBBLE_TRANSCRIPT_ENDPOINT
+ARG BUBBLE_GET_TRANSCRIPT_ENDPOINT
+ARG BUBBLE_STORY_ENDPOINT
+
+# Set environment variables
+ENV OPENAI_API_KEY=$OPENAI_API_KEY
+ENV BUBBLE_TRANSCRIPT_ENDPOINT=$BUBBLE_TRANSCRIPT_ENDPOINT
+ENV BUBBLE_GET_TRANSCRIPT_ENDPOINT=$BUBBLE_GET_TRANSCRIPT_ENDPOINT
+ENV BUBBLE_STORY_ENDPOINT=$BUBBLE_STORY_ENDPOINT
+
 # ensure that any dependent models are downloaded at build-time
 RUN python agent.py download-files
 
