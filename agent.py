@@ -23,6 +23,8 @@ from pydantic import BaseModel
 from typing import List
 from datetime import datetime
 
+from livekit.agents.worker import _WorkerEnvOption
+
 import requests
 import aiohttp
 
@@ -35,6 +37,9 @@ POST_STORY_URL = os.environ.get("BUBBLE_STORY_ENDPOINT")
 
 logger = logging.getLogger("my-worker")
 logger.setLevel(logging.INFO)
+
+# Define the threshold directly in the code
+THRESHOLD = 1.0
 
 if not api_key:
     raise ValueError(
@@ -325,7 +330,10 @@ if __name__ == "__main__":
     asyncio.run(
         cli.run_app(
             WorkerOptions(
-                entrypoint_fnc=entrypoint,  # Ensure entrypoint is async
+                entrypoint_fnc=entrypoint,
+                load_threshold=_WorkerEnvOption(
+                    dev_default=float("inf"), prod_default=THRESHOLD
+                ),
             )
         )
     )
