@@ -27,14 +27,20 @@ import requests
 import aiohttp
 
 
-load_dotenv(dotenv_path=".env")
-api_key = os.getenv("OPENAI_API_KEY")
-POST_TRANSCRIP_URL = os.getenv("BUBBLE_TRANSCRIPT_ENDPOINT")
-GET_TRANSCRIPT_URL = os.getenv("BUBBLE_GET_TRANSCRIPT_ENDPOINT")
-POST_STORY_URL = os.getenv("BUBBLE_STORY_ENDPOINT")
+# Read environment variables directly from the system
+api_key = os.environ.get("OPENAI_API_KEY")
+POST_TRANSCRIP_URL = os.environ.get("BUBBLE_TRANSCRIPT_ENDPOINT")
+GET_TRANSCRIPT_URL = os.environ.get("BUBBLE_GET_TRANSCRIPT_ENDPOINT")
+POST_STORY_URL = os.environ.get("BUBBLE_STORY_ENDPOINT")
 
 logger = logging.getLogger("my-worker")
 logger.setLevel(logging.INFO)
+
+if not api_key:
+    raise ValueError(
+        "OPENAI_API_KEY not found in environment variables. Make sure it is set in .env.local."
+    )
+OpenAI.api_key = api_key
 
 
 # Initialize FastAPI
